@@ -1,0 +1,105 @@
+# depslib dependency file v1.0
+1780023538 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\main.cpp
+	<iostream>
+	"semaforo.h"
+	"prodCons.h"
+	<thread>
+	<queue>
+	"job.h"
+
+1779940637 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\semaforo.cpp
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1779939958 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\semaforo.h
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1779935541 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\prodcons.h
+
+1780023654 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\prodcons.cpp
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+	"prodCons.h"
+	<queue>
+
+1779997895 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\job.cpp
+	<iostream>
+	"semaforo.h"
+	"prodCons.h"
+	<thread>
+	<queue>
+	"job.h"
+
+1779997833 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto\trabajopractico-piloto\job.h
+
+1779997895 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto - compartido\trabajopractico-piloto\job.cpp
+	<iostream>
+	"semaforo.h"
+	"prodCons.h"
+	<thread>
+	<queue>
+	"job.h"
+
+1779939958 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto - compartido\trabajopractico-piloto\semaforo.h
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1779935541 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto - compartido\trabajopractico-piloto\prodcons.h
+
+1779997833 c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto - compartido\trabajopractico-piloto\job.h
+
+1779940637 source:c:\users\santi\pictures\unla carrera sistemas\licenciaturaensistemasaño3\programación concurrente\cursada 2026-primer cuatrimestre\trabajo practico\trabajo practico_piloto - compartido\trabajopractico-piloto\semaforo.cpp
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1779997895 source:c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\job.cpp
+	<iostream>
+	"semaforo.h"
+	"prodCons.h"
+	<thread>
+	<queue>
+	"job.h"
+
+1779939958 c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\semaforo.h
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1780083671 c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\prodcons.h
+
+1779997833 c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\job.h
+
+1780083912 source:c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\prodcons.cpp
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+	"prodCons.h"
+	<queue>
+
+1780081867 source:c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\semaforo.cpp
+	<iostream>
+	"semaforo.h"
+	<condition_variable>
+	<mutex>
+
+1780083816 source:c:\proyectos\proyectosunla\trabajopractico-piloto_compartido\main.cpp
+	<iostream>
+	"semaforo.h"
+	"prodCons.h"
+	<thread>
+	<queue>
+	"job.h"
+
