@@ -1,66 +1,50 @@
+#include <fstream>
 #include <iostream>
-#include "semaforo.h"
-///#include <condition_variable>
-///#include <mutex>
 #include "prodCons.h"
+#include "semaforo.h"
+
 #include <thread>
-#include <queue>
-#include "job.h"
-
-/*IMPLEMENTAR:
-*PROGRAMACION CONCURRENTE(MÚLTIPLES HILOS)-Uso de múltiples hilos. Cada job debe ser generado y procesado con hilos independientes.
-*CONDICIONES DE CARRERA-2. Race Condition Gestionar correctamente el acceso concurrente al contador global de tareas
-*EXCLUSIÓN MUTUA-3. Exclusión Mutua Dos procesos no pueden acceder al mismo slot del Pool de VRAM en el mismo instante.
-*PRODUCTOR-CONSUMIDOR-4. Productor-Consumidor Sincronización de hilos para la inserción en la Queue y extracción hacia el Pool de VRam límite de 5
-*STARVATION-5. Starvation (Inanición) Garantizar que los jobs de prioridad "Free" se procesen incluso bajo alta demanda de usuarios "Premium".
-*PERSISTENCIA-6. Persistencia (Logging) Registro sincronizado de cada cambio de estado del job en un archivo actividad.log.
-
-gestionar correctamente el acceso concurrente al contador global de tareas finalizadas con èxito
-*/
-
+#include <cstdlib>
+#include <ctime>
+#include <mutex>
 using namespace std;
 
-
-Semaforo hay_espacio;
-Semaforo hay_datos;
-
-queue<int> msgQueue;///insertar acá(productor)
-queue<int> poolVRam;///insertar acà lo que se extrajo de msgQueue(consumidor)
-
-mutex mtx_buffer;
+extern int jobsFinalizados;
+extern ofstream logFile;
 
 int main()
 {
-    ///inicilizar los semáforos
-    init(hay_espacio,5);///el espacio máximo siempre es 5,o puede ser mayor?
-    init(hay_datos,0);
+    srand(time(nullptr));
 
-    thread t1(productor, 1, 0);
-    thread t2(productor, 2, 1);
-    thread t3(consumidor,1,0);///si comento los consumidores,el programa nunca termina
-    thread t4(consumidor,2,0);
-    thread t5(consumidor,3,1);
+    // Semáforos
+    init(hay_espacio, 20);
+    init(hay_datos, 0);
+    init(vram, 5);
 
+    // PRODUCTORES (20 jobs total)
+    std::thread p1(productor, 1, 10);
+    std::thread p2(productor, 2, 10);
 
+    // CONSUMIDORES (20 consumos total)
+    std::thread w1(consumidor, 1, 5);
+    std::thread w2(consumidor, 2, 5);
+    std::thread w3(consumidor, 3, 5);
+    std::thread w4(consumidor, 4, 5);
 
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
-    t5.join();
-    ///t3.join();
+    p1.join();
+    p2.join();
 
-
-
-    if(msgQueue.empty()){
-    //if(poolVRam.empty()){
-
-        cout<<"\nEl consumidor consumio todo "<<endl;
-    }
-    else{
-        cout<<"\nNo se pudo consumir todo"<<endl;
-    }
+    w1.join();
+    w2.join();
+    w3.join();
+    w4.join();
 
 
+
+    cout << "\nTOTAL DE JOBS FINALIZADOS: "
+          << jobsFinalizados
+          << std::endl;
+
+    logFile.close();
     return 0;
 }

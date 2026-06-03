@@ -1,10 +1,23 @@
-#ifndef PRODCONS_H_INCLUDED
-#define PRODCONS_H_INCLUDED
+#ifndef PRODCONS_H
+#define PRODCONS_H
 
+#include "semaforo.h"
+#include <queue>
 
-void productor(int id, int prioridad);
+struct Job
+{
+    int id;
+    int prioridad; // 1 = Premium, 0 = Free
+};
 
-void consumidor(int id, int prioridad);
+extern std::queue<Job> colaPremium;
+extern std::queue<Job> colaFree;
 
+extern Semaforo hay_datos;
+extern Semaforo hay_espacio;
+extern Semaforo vram;
 
-#endif // PRODCONS_H_INCLUDED
+void productor(int idProductor, int cantidad);
+void consumidor(int idConsumidor, int cantidad);
+
+#endif

@@ -1,113 +1,206 @@
-#include <iostream>
-#include "semaforo.h"
-#include <condition_variable>
-#include <mutex>
 #include "prodCons.h"
-#include <queue>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <fstream>
+#include <ctime>
 
 using namespace std;
 
-///extern std::queue<int> buffer;
-extern queue<int> msgQueue;///insertar acá
-extern queue<int> poolVRam;///insertar acà lo que se extrajo de msgQueue
-mutex mtx_consola;
-mutex mtx_contador;
-mutex mtx_productor;
-extern mutex mtx_buffer;
+std::queue<Job> colaPremium;
+std::queue<Job> colaFree;
 
 
 
-const int tam=20;
-int contador=0;
-int producidos=0;
 
-extern Semaforo hay_espacio;///extern sirve para no redefinir la variable
-extern Semaforo hay_datos;
+Semaforo hay_datos;
+Semaforo hay_espacio;
+Semaforo vram;
+
+mutex mtxCola;
+mutex mtxId;
+mutex mtxConsola;
+mutex mtxFinalizados;
+mutex mtxLog;
+mutex mtxVRAM;
+
+ofstream logFile("sistema.log");
+int jobsFinalizados=0;
+int idGlobal = 0;
+int premiumConsecutivos = 0;
+Job poolVRAM[5];
+bool slotOcupado[5] = {false,false,false,false,false};
 
 
-void productor(int id, int prioridad)///inserta datos en la queue
+// ---------------- ESCRIBIR LOG -------------
+void escribirLog(int idJob,int prioridad,const  string& evento)
 {
-    bool condicion=true;
+    time_t ahora = time(nullptr);
 
-    while(condicion)
+    mtxLog.lock();
+
+    logFile
+        << "[" << ahora << "] - "
+        << idJob << " - "
+        << (prioridad ? "Premium" : "Free")
+        << " - "
+        << evento
+        << std::endl;
+
+    mtxLog.unlock();
+}
+
+// ---------------- PRODUCTOR ----------------
+
+int reservarSlotVRAM(Job job)
+{
+    mtxVRAM.lock();
+
+    int slot = -1;
+
+    for(int i = 0; i < 5; i++)
     {
-        mtx_productor.lock();
-        if(producidos<tam){
+        if(!slotOcupado[i])
+        {
+            slotOcupado[i] = true;
+            poolVRAM[i] = job;
+            slot = i;
+            break;
+        }
+    }
 
+    mtxVRAM.unlock();
+
+    return slot;
+}
+
+void liberarSlotVRAM(int slot)
+{
+    mtxVRAM.lock();
+
+    slotOcupado[slot] = false;
+
+    mtxVRAM.unlock();
+}
+
+void productor(int idProductor, int cantidad)
+{
+    for(int i = 0; i < cantidad; i++)
+    {
+        Job job;
+
+        mtxId.lock();
+        job.id = idGlobal++;
+        mtxId.unlock();
+
+        job.prioridad = (i % 2 == 0) ? 1 : 0;
+
+        mtxConsola.lock();
+        std::cout
+            << "[PRODUCTOR " << idProductor << "] CREA Job "
+            << job.id
+            << " - "
+            << (job.prioridad ? "Premium" : "Free")
+            << std::endl;
+        mtxConsola.unlock();
+
+        escribirLog(job.id,job.prioridad,"CREADO");
 
         wait(hay_espacio);
 
-        mtx_buffer.lock();
-        ///PREGUNTAR POR LA MSGQUEUE Y VRAM-----
-        msgQueue.push(producidos);///inserta datos en la queue
+        mtxCola.lock();
 
-        mtx_consola.lock();
-        cout<<"hay_espacio: "<<hay_espacio.contador<<endl;
-        mtx_consola.unlock();
+        if(job.prioridad)
+            colaPremium.push(job);
+        else
+            colaFree.push(job);
 
-        mtx_buffer.unlock();
+        mtxCola.unlock();
+        escribirLog(job.id,job.prioridad,"EN_COLA");
 
         signal(hay_datos);
-        signal(hay_espacio);
-
-        mtx_consola.lock();
-        cout<<"Productor "<<id<<": produjo "<<producidos<<endl;
-        mtx_consola.unlock();
 
 
-        producidos++;
-        }else{
-        condicion=false;
-        }
-        mtx_productor.unlock();
+
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(100)
+        );
     }
-    mtx_consola.lock();
-    cout<<"\nProducidos "<<producidos<<endl;
-    mtx_consola.unlock();
 }
 
-void consumidor(int id, int prioridad)///extrae datos de la queue para insertarlos en la VRam
+// ---------------- CONSUMIDOR ----------------
+
+void consumidor(int idConsumidor, int cantidad)
 {
-    int productosConsumidos=0;
-    bool condicion=true;
-
-
-    while(condicion)
+    for(int i = 0; i < cantidad; i++)
     {
-        mtx_contador.lock();
-        if(contador<tam){
+        wait(hay_datos);
 
-        wait(hay_espacio);
-        wait(hay_datos);///espera a que haya datos
+        Job job;
 
+        mtxCola.lock();
 
-        mtx_buffer.lock();
-        int consumido=msgQueue.front();
-        mtx_buffer.unlock();
+        if(
+            !colaPremium.empty() &&
+            (premiumConsecutivos < 5 || colaFree.empty())
+        )
+        {
+            job = colaPremium.front();
+            colaPremium.pop();
 
-        poolVRam.push(consumido);///inserta el dato previamente guardado en el poolVram
+            premiumConsecutivos++;
+        }
+        else
+        {
+            job = colaFree.front();
+            colaFree.pop();
+
+            premiumConsecutivos = 0;
+        }
+        mtxCola.unlock();
 
         signal(hay_espacio);
+        mtxConsola.lock();
+        std::cout
+            << "[WORKER " << idConsumidor << "] TOMA Job "
+            << job.id
+            << " - "
+            << (job.prioridad ? "Premium" : "Free")
+            << std::endl;
+        mtxConsola.unlock();
 
-        mtx_consola.lock();
-        cout<<"Consumidor "<<id<<": Consumio "<<consumido<<endl;
-        mtx_consola.unlock();
+        wait(vram);
+        std::this_thread::sleep_for(
+    std::chrono::milliseconds(450)
+);
+        int slot = reservarSlotVRAM(job);
+        escribirLog(job.id,job.prioridad,"ASIGNADO_VRAM");
 
-        contador++;
+        mtxConsola.lock();
+        std::cout
+            << "[WORKER " << idConsumidor << "] PROCESANDO Job "
+            << job.id << std::endl;
+        mtxConsola.unlock();
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(600)
+        );
 
-        productosConsumidos++;
-        }else{
-            condicion=false;
-        }
-        mtx_contador.unlock();
+        liberarSlotVRAM(slot);
+        std::this_thread::sleep_for(
+    std::chrono::milliseconds(250));
+        signal(vram);
+        mtxFinalizados.lock();
+        jobsFinalizados++;
+        mtxFinalizados.unlock();
+
+        mtxConsola.lock();
+        std::cout
+            << "[WORKER " << idConsumidor << "] FINALIZA Job "
+            << job.id << std::endl;
+        mtxConsola.unlock();
+
+        escribirLog(job.id,job.prioridad,"FINALIZADO");
 
     }
-
-        mtx_consola.lock();
-        cout<<"CONSUMIDOR["<<id<<"] Consumio "<<productosConsumidos<<" productos"<<endl;
-        mtx_consola.unlock();
 }
-
-
-
-
