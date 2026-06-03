@@ -1,0 +1,47 @@
+# depslib dependency file v1.0
+1780350253 source:c:\users\pc\desktop\trabajo de concurrente version 3\integrador concurrente\main.cpp
+	"prodCons.h"
+	"semaforo.h"
+	<thread>
+	<cstdlib>
+	<ctime>
+	<mutex>
+
+1780349952 c:\users\pc\desktop\trabajo de concurrente version 3\integrador concurrente\prodcons.h
+	"semaforo.h"
+	<queue>
+
+1780349980 c:\users\pc\desktop\trabajo de concurrente version 3\integrador concurrente\semaforo.h
+	<mutex>
+	<condition_variable>
+
+1780453027 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\main.cpp
+	<fstream>
+	<iostream>
+	"prodCons.h"
+	"semaforo.h"
+	<thread>
+	<cstdlib>
+	<ctime>
+	<mutex>
+
+1780453521 c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\prodcons.h
+	"semaforo.h"
+	<queue>
+
+1780349980 c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\semaforo.h
+	<mutex>
+	<condition_variable>
+
+1780452274 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\semaforo.cpp
+	"semaforo.h"
+
+1780454258 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\prodcons.cpp
+	"prodCons.h"
+	<iostream>
+	<thread>
+	<mutex>
+	<chrono>
+	<fstream>
+	<ctime>
+

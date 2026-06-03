@@ -1,1 +1,0 @@
-# Sistema-De-Renderizado-De-La-Nube
