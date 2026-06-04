@@ -1,4 +1,5 @@
 #include "semaforo.h"
+
 using namespace std;
 
 void init(Semaforo& s, int n)

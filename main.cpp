@@ -11,39 +11,40 @@ using namespace std;
 
 extern int jobsFinalizados;
 extern ofstream logFile;
+int totalJobs = 0;
 
 int main()
 {
     srand(time(nullptr));
 
-    // Sem�foros
-    init(hay_espacio, 20);
+    // ── Configuracion del escenario ──────────────────────────
+    int numProductores  = 3;
+    int numConsumidores = 3;
+    totalJobs           = 1500;
+    // ────────────────────────────────────────────────────────
+
+    init(hay_espacio, totalJobs);
     init(hay_datos, 0);
     init(vram, 5);
 
-    // PRODUCTORES (20 jobs total)
-    std::thread p1(productor, 1, 10);
-    std::thread p2(productor, 2, 10);
+    vector<thread> productores;
+    for (int i = 1; i <= numProductores; i++)
+        productores.emplace_back(productor, i);
 
-    // CONSUMIDORES (20 consumos total)
-    std::thread w1(consumidor, 1, 5);
-    std::thread w2(consumidor, 2, 5);
-    std::thread w3(consumidor, 3, 5);
-    std::thread w4(consumidor, 4, 5);
+    vector<thread> consumidores;
+    for (int i = 1; i <= numConsumidores; i++)
+        consumidores.emplace_back(consumidor, i);
 
-    p1.join();
-    p2.join();
+    for (auto& p : productores) p.join();
 
-    w1.join();
-    w2.join();
-    w3.join();
-    w4.join();
+    // Productores terminaron: despertar a todos los consumidores
+    // que puedan estar bloqueados en wait(hay_datos)
+    for (int i = 0; i < numConsumidores; i++)
+        signal(hay_datos);
 
+    for (auto& c : consumidores) c.join();
 
-
-    cout << "\nTOTAL DE JOBS FINALIZADOS: "
-          << jobsFinalizados
-          << std::endl;
+    cout << "\nTOTAL DE JOBS FINALIZADOS: " << jobsFinalizados << endl;
 
     logFile.close();
     return 0;

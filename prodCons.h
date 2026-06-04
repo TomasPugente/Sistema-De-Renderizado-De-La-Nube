@@ -17,7 +17,8 @@ extern Semaforo hay_datos;
 extern Semaforo hay_espacio;
 extern Semaforo vram;
 
-void productor(int idProductor, int cantidad);
-void consumidor(int idConsumidor, int cantidad);
+
+void productor(int idProductor);
+void consumidor(int idConsumidor);
 
 #endif

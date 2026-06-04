@@ -45,3 +45,33 @@
 	<fstream>
 	<ctime>
 
+1780539286 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\proyecto\sistema-de-renderizado-de-la-nube\sistema-de-renderizado-de-la-nube\main.cpp
+	<fstream>
+	<iostream>
+	"prodCons.h"
+	"semaforo.h"
+	<thread>
+	<cstdlib>
+	<ctime>
+	<mutex>
+
+1780533668 c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\proyecto\sistema-de-renderizado-de-la-nube\sistema-de-renderizado-de-la-nube\prodcons.h
+	"semaforo.h"
+	<queue>
+
+1780459265 c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\proyecto\sistema-de-renderizado-de-la-nube\sistema-de-renderizado-de-la-nube\semaforo.h
+	<mutex>
+	<condition_variable>
+
+1780532938 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\proyecto\sistema-de-renderizado-de-la-nube\sistema-de-renderizado-de-la-nube\semaforo.cpp
+	"semaforo.h"
+
+1780539301 source:c:\proyectos\proyectosunla\trabajo de concurrente version 3\integrador concurrente\proyecto\sistema-de-renderizado-de-la-nube\sistema-de-renderizado-de-la-nube\prodcons.cpp
+	"prodCons.h"
+	<iostream>
+	<thread>
+	<mutex>
+	<chrono>
+	<fstream>
+	<ctime>
+
