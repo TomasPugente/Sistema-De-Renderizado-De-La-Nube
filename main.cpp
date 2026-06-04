@@ -37,8 +37,6 @@ int main()
 
     for (auto& p : productores) p.join();
 
-    // Productores terminaron: despertar a todos los consumidores
-    // que puedan estar bloqueados en wait(hay_datos)
     for (int i = 0; i < numConsumidores; i++)
         signal(hay_datos);
 
